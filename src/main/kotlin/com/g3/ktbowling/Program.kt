@@ -20,21 +20,17 @@ private fun playTheGame(rolls: Queue<Roll>): Int {
             return -1
         }
 
-        var frameValue = 0
-        val (newTotal, newFrameValue) = computeFrameValue(firstRoll, rolls, total)
-        total = newTotal
-        frameValue = newFrameValue
-
-        if (total == -1) return -1
+        val (stop, runningTotal) = computeFrameValue(firstRoll, rolls, total)
+        total = runningTotal
+        if (stop) return -1
 
         frameCount++
-        total += frameValue
     }
 
     return total
 }
 
-private fun computeFrameValue(firstRoll: Roll, rolls: Queue<Roll>, runningTotal: Int) : Pair<Int, Int>{
+private fun computeFrameValue(firstRoll: Roll, rolls: Queue<Roll>, runningTotal: Int) : Pair<Boolean, Int>{
     if (firstRoll.rollValue == 10) {
         return assignBonus(rolls, firstRoll.rollValue, 2, runningTotal)
     } else {
@@ -42,7 +38,7 @@ private fun computeFrameValue(firstRoll: Roll, rolls: Queue<Roll>, runningTotal:
         if (frameValue == 10) {
             return assignBonus(rolls, frameValue, 1, runningTotal)
         }
-        return Pair(runningTotal, frameValue)
+        return Pair(false, runningTotal + frameValue)
     }
 }
 
@@ -52,11 +48,11 @@ private operator fun <E> Queue<E>.get(i: Int): E {
 
 fun canTake(howMany: Int, fromCollection: Collection<Roll>): Boolean = fromCollection.size >= howMany
 
-fun assignBonus(rolls: Collection<Roll>, partialValue: Int, bonusRolls: Int, totalIn: Int): Pair<Int,Int> {
+fun assignBonus(rolls: Collection<Roll>, partialValue: Int, bonusRolls: Int, totalIn: Int): Pair<Boolean,Int> {
     if (!canTake(bonusRolls, rolls)) {
-        return Pair(-1, partialValue)
+        return Pair(true, totalIn + partialValue)
     }
-    return Pair(totalIn, partialValue + computeBonus(rolls, bonusRolls))
+    return Pair(false, totalIn + partialValue + computeBonus(rolls, bonusRolls))
 }
 
 private fun computeBonus(inputRolls: Collection<Roll>, bonus: Int) =
