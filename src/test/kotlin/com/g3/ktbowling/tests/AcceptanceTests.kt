@@ -38,7 +38,12 @@ class AcceptanceTests {
             "1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1" to "20",
             "1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,5,5,1" to "29",
             "1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,10,1,1" to "30",
-            "10,10,10,10,10,10,10,10,10,10,10,10" to "300"
+            "10,10,10,10,10,10,10,10,10,10,10,10" to "300",
+            "1,1,1,1,1,1,1,1,1,1,1,1,1,1,5,5,1,1" to "27",
+            "10,10,10,1,1" to "65",
+            "1,1,1,1,1,1,1,1,1,1,1,1,1,1,5,5,1" to "",
+            "10,10,10,1" to "",
+            "1,4,4,5,6,4,5,5,10,0,1,7,3,6,4,10,2,8,6" to "133"
     ).map {(input, expected) ->
         DynamicTest.dynamicTest("Given ${input} i expect ${expected}"){
             eachTest {
@@ -53,7 +58,8 @@ class AcceptanceTests {
 
         var total = 0
         var i = 0
-        while (i < inputRolls.size && ((i < 19 && inputRolls.size > 19) || (i < 10)) ){
+        var frameCount = 0
+        while (i < inputRolls.size && frameCount < 10){
             if(i == inputRolls.size - 1){
                 total = 0
                 break
@@ -81,6 +87,7 @@ class AcceptanceTests {
                 i += 2
             }
 
+            frameCount++
             total += frameValue
         }
 
