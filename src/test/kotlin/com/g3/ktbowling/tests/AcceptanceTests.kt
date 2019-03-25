@@ -1,5 +1,6 @@
 package com.g3.ktbowling.tests
 
+import com.g3.ktbowling.main
 import org.junit.jupiter.api.*
 import java.io.ByteArrayOutputStream
 import java.io.OutputStream
@@ -47,51 +48,9 @@ class AcceptanceTests {
     ).map {(input, expected) ->
         DynamicTest.dynamicTest("Given ${input} i expect ${expected}"){
             eachTest {
-                play(arrayOf(input))
+                main(arrayOf(input))
                 Assertions.assertEquals("$expected${System.lineSeparator()}", _myOut.toString())
             }
         }
     }
-
-    private fun play(args: Array<String>) {
-        val inputRolls = args[0].split(",").map(String::toInt)
-
-        var total = 0
-        var i = 0
-        var frameCount = 0
-        while (i < inputRolls.size && frameCount < 10){
-            if(i == inputRolls.size - 1){
-                total = 0
-                break
-            }
-
-            var frameValue = 0
-            if (inputRolls[i] == 10){
-                if(i == inputRolls.size - 2){
-                    total = 0
-                    break
-                }
-
-                frameValue = 10 + inputRolls[i + 1] + inputRolls[i + 2]
-                i++
-            }else{
-                frameValue = inputRolls[i] + inputRolls[i + 1]
-                if(frameValue == 10){
-                    if(i == inputRolls.size - 2){
-                        total = 0
-                        break
-                    }
-
-                    frameValue += inputRolls[i + 2]
-                }
-                i += 2
-            }
-
-            frameCount++
-            total += frameValue
-        }
-
-        println(if(total != 0) total else "")
-    }
-
 }
