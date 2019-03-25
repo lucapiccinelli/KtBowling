@@ -29,6 +29,7 @@ class AcceptanceTests {
     }
 
     private fun play(args: Array<String>) {
+        println("2")
     }
 
 }
