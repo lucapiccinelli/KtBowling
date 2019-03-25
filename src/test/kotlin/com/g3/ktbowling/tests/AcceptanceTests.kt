@@ -8,29 +8,40 @@ import java.io.PrintStream
 class AcceptanceTests {
     private lateinit var _myOut : OutputStream
 
-    @BeforeAll
-    fun OneTimeSetup(){
+    fun setup(){
         _myOut = ByteArrayOutputStream()
         System.setOut(PrintStream(_myOut))
     }
 
-    @AfterAll
-    fun OneTimeTearDown(){
+    fun tearDown(){
         _myOut.close()
+    }
+
+    inline fun eachTest(codeBlock: () -> Unit){
+        try {
+            setup()
+            codeBlock()
+        }finally {
+            tearDown()
+        }
     }
 
     @TestFactory
     fun `As a player i want to know my bowling point`() = listOf(
-            "1,1" to "2"
+            "1,1" to "2",
+            "5,5,1" to "11"
     ).map {(input, expected) ->
         DynamicTest.dynamicTest("Given ${input} i expect ${expected}"){
-            play(arrayOf(input))
-            Assertions.assertEquals("$expected${System.lineSeparator()}", _myOut.toString())
+            eachTest {
+                play(arrayOf(input))
+                Assertions.assertEquals("$expected${System.lineSeparator()}", _myOut.toString())
+            }
         }
     }
 
     private fun play(args: Array<String>) {
-        println("2")
+        var totalScore = args[0].split(",").map(String::toInt).sum()
+        println(totalScore)
     }
 
 }
