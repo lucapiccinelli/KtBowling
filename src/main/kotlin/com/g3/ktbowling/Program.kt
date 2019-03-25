@@ -1,42 +1,65 @@
 package com.g3.ktbowling
 
 fun main(args: Array<String>) {
-    val inputRolls = args[0].split(",").map(String::toInt)
+    val inputRolls = readInput(args)
+    var total = playTheGame(inputRolls)
+    printTheOutput(total)
+}
 
-    var total = 0
+
+private fun playTheGame(inputRolls: List<Int>): Int {
+    var total: Int = 0
     var i = 0
     var frameCount = 0
-    while (i < inputRolls.size && frameCount < 10){
-        if(i == inputRolls.size - 1){
-            total = 0
-            break
+    while (i < inputRolls.size && frameCount < 10) {
+        if (!canTake(1, inputRolls, i)) {
+            return -1
         }
 
         var frameValue = 0
-        if (inputRolls[i] == 10){
-            if(i == inputRolls.size - 2){
-                total = 0
-                break
-            }
+        if (inputRolls[i] == 10) {
 
-            frameValue = 10 + inputRolls[i + 1] + inputRolls[i + 2]
+            val (newTotal, newFrameValue) = assignBonus(inputRolls, 10, i, 2, total)
+            total = newTotal
+            frameValue = newFrameValue
+
             i++
-        }else{
-            frameValue = inputRolls[i] + inputRolls[i + 1]
-            if(frameValue == 10){
-                if(i == inputRolls.size - 2){
-                    total = 0
-                    break
-                }
+        } else {
 
-                frameValue += inputRolls[i + 2]
+            frameValue = inputRolls[i] + inputRolls[i + 1]
+            i++
+
+            if (frameValue == 10) {
+                val (newTotal, newFrameValue) = assignBonus(inputRolls, frameValue, i, 1, total)
+                total = newTotal
+                frameValue = newFrameValue
             }
-            i += 2
+
+            i++
         }
+        if (total == -1) break
 
         frameCount++
         total += frameValue
     }
 
-    println(if(total != 0) total else "")
+    return total
 }
+
+fun canTake(howMany: Int, fromCollection: List<Int>, fromIndex: Int): Boolean = fromIndex < fromCollection.size - howMany
+
+fun assignBonus(rolls: List<Int>, partialValue: Int, currentIndex: Int, bonusRolls: Int, totalIn: Int): Pair<Int,Int> {
+    if (!canTake(bonusRolls, rolls, currentIndex)) {
+        return Pair(-1, partialValue)
+    }
+    return Pair(totalIn, partialValue + computeBonus(rolls, currentIndex, bonusRolls))
+}
+
+private fun computeBonus(inputRolls: List<Int>, fromIndex: Int, bonus: Int) =
+        inputRolls.slice(fromIndex + 1..inputRolls.size - 1).take(bonus).sum()
+
+private fun printTheOutput(total: Int) {
+    println(if (total > 0) total else "")
+}
+
+private fun readInput(args: Array<String>) = args[0].split(",").map(String::toInt)
