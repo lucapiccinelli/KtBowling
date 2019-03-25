@@ -1,9 +1,6 @@
 package com.g3.ktbowling.tests
 
-import org.junit.jupiter.api.AfterAll
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.*
 import java.io.ByteArrayOutputStream
 import java.io.OutputStream
 import java.io.PrintStream
@@ -22,10 +19,14 @@ class AcceptanceTests {
         _myOut.close()
     }
 
-    @Test
-    fun `As a player i want to know my bowling point`(){
-        play(arrayOf("1,1"))
-        Assertions.assertEquals("2${System.lineSeparator()}", _myOut.toString())
+    @TestFactory
+    fun `As a player i want to know my bowling point`() = listOf(
+            "1,1" to "2"
+    ).map {(input, expected) ->
+        DynamicTest.dynamicTest("Given ${input} i expect ${expected}"){
+            play(arrayOf(input))
+            Assertions.assertEquals("$expected${System.lineSeparator()}", _myOut.toString())
+        }
     }
 
     private fun play(args: Array<String>) {
