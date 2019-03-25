@@ -29,7 +29,8 @@ class AcceptanceTests {
     @TestFactory
     fun `As a player i want to know my bowling point`() = listOf(
             "1,1" to "2",
-            "5,5,1" to "11"
+            "5,5,1" to "",
+            "5,5,1,1" to "13"
     ).map {(input, expected) ->
         DynamicTest.dynamicTest("Given ${input} i expect ${expected}"){
             eachTest {
@@ -40,7 +41,27 @@ class AcceptanceTests {
     }
 
     private fun play(args: Array<String>) {
-        var totalScore = args[0].split(",").map(String::toInt).sum()
+        val inputRolls = args[0].split(",").map(String::toInt)
+        val (firstRolls, secondRolls) = inputRolls.withIndex()
+                .groupBy { it.index % 2 == 0 }
+                .map { it.value.map { it.value } }
+
+        if (firstRolls.size != secondRolls.size){
+            println()
+            return
+        }
+
+        val partialScores = firstRolls.zip(secondRolls)
+                .map { (f, s) ->  f + s}
+
+        val totalScore = partialScores.withIndex()
+                .fold(0, {acc, v ->
+                    when(v.value){
+                        10 -> acc + v.value + firstRolls[v.index + 1]
+                        else -> acc + v.value
+                    }
+        })
+
         println(totalScore)
     }
 
