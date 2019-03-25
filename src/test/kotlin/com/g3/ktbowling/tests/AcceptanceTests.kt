@@ -31,7 +31,8 @@ class AcceptanceTests {
             "1,1" to "2",
             "5,5,1" to "",
             "5,5" to "",
-            "5,5,1,1" to "13"
+            "5,5,1,1" to "13",
+            "10,1,1" to "14"
     ).map {(input, expected) ->
         DynamicTest.dynamicTest("Given ${input} i expect ${expected}"){
             eachTest {
@@ -45,20 +46,28 @@ class AcceptanceTests {
         val inputRolls = args[0].split(",").map(String::toInt)
 
         var total = 0
-        for (i in inputRolls.indices.filter { it % 2 == 0 }){
+        var i = 0
+        while (i < inputRolls.size){
             if(i == inputRolls.size - 1){
                 total = 0
                 break
             }
 
-            var frameValue = inputRolls[i] + inputRolls[i + 1]
-            if(frameValue == 10){
-                if(i == inputRolls.size - 2){
-                    total = 0
-                    break
-                }
+            var frameValue = 0
+            if (inputRolls[i] == 10){
+                frameValue = 10 + inputRolls[i + 1] + inputRolls[i + 2]
+                i++
+            }else{
+                frameValue = inputRolls[i] + inputRolls[i + 1]
+                if(frameValue == 10){
+                    if(i == inputRolls.size - 2){
+                        total = 0
+                        break
+                    }
 
-                frameValue += inputRolls[i + 2]
+                    frameValue += inputRolls[i + 2]
+                }
+                i += 2
             }
 
             total += frameValue
