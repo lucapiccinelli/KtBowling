@@ -1,12 +1,12 @@
 package com.g3.ktbowling
 
-class TotalScoreWithValue(val score: Int) : TotalScore {
-    override fun plus(totalScore: TotalScore): TotalScore = totalScore + score
+class TotalScoreWithValue(override val totalScore: Int) : TotalScore {
+    override fun plus(totalScore: TotalScore): TotalScore = totalScore + this.totalScore
 
     override fun plus(value: Int): TotalScore {
-        return TotalScoreWithValue(score + value)
+        return TotalScoreWithValue(totalScore + value)
     }
 
     override fun canContinue() = true
-    override fun toString() = "${score}"
+    override fun toString() = "${totalScore}"
 }

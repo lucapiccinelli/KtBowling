@@ -26,12 +26,11 @@ class BowlingRolls(rolls: Collection<Roll>) {
         }
 
         if(!canTake(1)) return EmptyBowlingFrame()
-        val secondRoll = takeNextRoll()
 
-        val rollsSum = firstRoll.rollValue + secondRoll.rollValue
-        when(rollsSum){
-            10 -> return SpareFrame(this)
-            else -> return StandardFrame(rollsSum)
+        val rollsSum = firstRoll.rollValue + takeNextRoll().rollValue
+        return when(rollsSum){
+            10 -> SpareFrame(this)
+            else -> StandardFrame(rollsSum)
         }
     }
 
