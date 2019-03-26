@@ -4,41 +4,41 @@ import java.util.*
 
 fun main(args: Array<String>) {
     val inputRolls = readInput(args)
-    var total = playTheGame(ArrayDeque(inputRolls))
+    var total = playTheGame(BowlingRolls(inputRolls))
     printTheOutput(total)
 }
 
 
-private fun playTheGame(rolls: Queue<Roll>): Int {
-    var total: Int = 0
-    var frameCount = 0
+private fun playTheGame(bowlingRolls: BowlingRolls): TotalScore {
+    var totalScore: TotalScore = TotalScoreWithValue(0)
 
-    while (!rolls.isEmpty() && frameCount < 10) {
-        val firstRoll = rolls.remove()
-
-        if (!canTake(1, rolls)) {
-            return -1
-        }
-
-        val (stop, runningTotal) = computeFrameValue(firstRoll, rolls, total)
-        total = runningTotal
-        if (stop) return -1
-
-        frameCount++
+    while (bowlingRolls.hasFrames() && totalScore.canContinue()) {
+        var frame = bowlingRolls.takeNextFrame()
+        totalScore += frame.computeFrameScore()
     }
-
-    return total
+//    while (!bowlingRolls.isEmpty() && totalScore.canContinue()) {
+//        totalScore = computeFrameScore(bowlingRolls, totalScore)
+//    }
+    return totalScore
 }
 
-private fun computeFrameValue(firstRoll: Roll, rolls: Queue<Roll>, runningTotal: Int) : Pair<Boolean, Int>{
+fun computeFrameScore(bowlingRolls: BowlingRolls, totalScore: TotalScore): TotalScore {
+    val firstRoll = bowlingRolls.takeNextRoll()
+    if (!bowlingRolls.canTake(1)) {
+        return EmptyScore()
+    }
+    return computeFrameValue(firstRoll, bowlingRolls, totalScore)
+}
+
+private fun computeFrameValue(firstRoll: Roll, rolls: BowlingRolls, runningTotal: TotalScore) : TotalScore{
     if (firstRoll.rollValue == 10) {
-        return assignBonus(rolls, firstRoll.rollValue, 2, runningTotal)
+        return rolls.assignBonus(firstRoll.rollValue, 2)
     } else {
-        val frameValue = firstRoll.rollValue + rolls.remove().rollValue
+        val frameValue = firstRoll.rollValue + rolls.takeNextRoll().rollValue
         if (frameValue == 10) {
-            return assignBonus(rolls, frameValue, 1, runningTotal)
+            return rolls.assignBonus(frameValue, 1)
         }
-        return Pair(false, runningTotal + frameValue)
+        return runningTotal + frameValue
     }
 }
 
@@ -46,22 +46,8 @@ private operator fun <E> Queue<E>.get(i: Int): E {
     return this.elementAt(i)
 }
 
-fun canTake(howMany: Int, fromCollection: Collection<Roll>): Boolean = fromCollection.size >= howMany
-
-fun assignBonus(rolls: Collection<Roll>, partialValue: Int, bonusRolls: Int, totalIn: Int): Pair<Boolean,Int> {
-    if (!canTake(bonusRolls, rolls)) {
-        return Pair(true, totalIn + partialValue)
-    }
-    return Pair(false, totalIn + partialValue + computeBonus(rolls, bonusRolls))
-}
-
-private fun computeBonus(inputRolls: Collection<Roll>, bonus: Int) =
-        inputRolls
-                .take(bonus)
-                .sumBy { it.rollValue }
-
-private fun printTheOutput(total: Int) {
-    println(if (total > 0) total else "")
+private fun printTheOutput(total: TotalScore) {
+    println(total)
 }
 
 private fun readInput(args: Array<String>) = args[0].split(",")
@@ -69,5 +55,3 @@ private fun readInput(args: Array<String>) = args[0].split(",")
         .map { Roll(it) }
 
 
-class Roll(val rollValue: Int) {
-}
