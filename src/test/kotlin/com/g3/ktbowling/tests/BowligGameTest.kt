@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.TestFactory
 
-class BowligGameTests{
+class BowligGameTest{
     @TestFactory
     fun `As a player i want to know my bowling point`() = listOf(
             "1,1" to 2,

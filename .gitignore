@@ -41,3 +41,5 @@ node_modules/
 .rpt2_cache/
 libraries/tools/kotlin-test-nodejs-runner/lib/target
 target/test-classes
+target
+target/classes target/KtBowling-1.0-SNAPSHOT.jar target/maven-archiver target/maven-status target/surefire-reports target/test-classes

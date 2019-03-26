@@ -6,7 +6,7 @@ import java.io.ByteArrayOutputStream
 import java.io.OutputStream
 import java.io.PrintStream
 
-class AcceptanceTests {
+class AcceptanceTest {
     private lateinit var _myOut : OutputStream
 
     fun setup(){
@@ -28,7 +28,7 @@ class AcceptanceTests {
     }
 
     @TestFactory
-    fun `Given a list of comma separated numbers, i expect an output in console`() = listOf(
+    fun `test Given a list of comma separated numbers, i expect an output in console`() = listOf(
             "1,4,4,5,6,4,5,5,10,0,1,7,3,6,4,10,2,8,6" to "133",
             "1,4,4,5,6,4,5,5,10,0,1,7,3,6,4,10,2,8" to ""
     ).map {(input, expected) ->

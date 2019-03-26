@@ -8,9 +8,10 @@ import org.junit.jupiter.api.TestFactory
 import kotlin.math.exp
 import kotlin.test.expect
 
-class BowlingRollsTests{
+class BowlingRollsTest{
+
     @TestFactory
-    fun `to assign a bonus, you must have enough Rolls`() = listOf(
+    fun `test to assign a bonus, you must have enough Rolls`() = listOf(
             emptyList<Roll>() to false,
             listOf(Roll(1)) to true
     ).map{(input, expected) ->
@@ -22,7 +23,7 @@ class BowlingRollsTests{
     }
 
     @TestFactory
-    fun `new Bowling list of roll has frame logic`() = listOf(
+    fun `test new Bowling list of roll has frame logic`() = listOf(
             listOf(Roll(10)) to true,
             emptyList<Roll>() to false
     ).map{(input, expected) ->
@@ -34,7 +35,7 @@ class BowlingRollsTests{
     }
 
     @TestFactory
-    fun `if i take out ten frames, i don't have anymore frames`() = listOf(
+    fun `test if i take out ten frames, i don't have anymore frames`() = listOf(
             Triple((0..11).map { Roll(10) }, (0..11),  false),
             Triple((0..19).map { Roll(1) },(0..11), false),
             Triple((0..11).map { Roll(1) },(0..5), false),
@@ -49,7 +50,7 @@ class BowlingRollsTests{
     }
 
     @TestFactory
-    fun `score can continue logic by input`()
+    fun `test score can continue logic by input`()
         = listOf(
             (0..1).map { Roll(1) } to true,
             (0..0).map { Roll(1) } to false,
