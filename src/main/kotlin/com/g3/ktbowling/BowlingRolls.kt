@@ -6,19 +6,6 @@ class BowlingRolls(rolls: Collection<Roll>) {
     private val _rollsQueue: Queue<Roll> = ArrayDeque(rolls)
     private var _frameCount: Int = 0
 
-    fun takeNextRoll(): Roll = _rollsQueue.remove()
-
-    fun isEmpty(): Boolean {
-        _frameCount++
-        return _rollsQueue.size == 0 || _frameCount > 10
-    }
-
-    fun canTake(howMany: Int): Boolean = _rollsQueue.size >= howMany
-
-    fun computeBonus(bonusRolls: Int): Int =
-        _rollsQueue
-                .take(bonusRolls)
-                .sumBy { it.rollValue }
 
     fun assignBonus(rollValue: Int, bonusRolls: Int): TotalScore {
         if (!canTake(bonusRolls)) {
@@ -47,4 +34,13 @@ class BowlingRolls(rolls: Collection<Roll>) {
             else -> return StandardFrame(rollsSum)
         }
     }
+
+    private fun takeNextRoll(): Roll = _rollsQueue.remove()
+
+    private fun canTake(howMany: Int): Boolean = _rollsQueue.size >= howMany
+
+    private fun computeBonus(bonusRolls: Int): Int =
+        _rollsQueue
+                .take(bonusRolls)
+                .sumBy { it.rollValue }
 }
